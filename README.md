@@ -20,3 +20,7 @@ streamlit run app.py
 
 ## Dataset
 O CSV incluído é **sintético/demonstrativo**, gerado para tornar o projeto executável imediatamente e satisfazer os requisitos estruturais do guia. Para a entrega acadêmica, substitua-o por um dataset de fonte original (Kaggle/UCI/dados.gov.br etc.) e registre a URL original no relatório/PDF.
+
+
+## Link Git 
+https://github.com/valdemirogomes/laboratorio-estatistico
