@@ -1,22 +1,56 @@
 # RELATÓRIO — Laboratório Estatístico Interativo
 
-## 1. Dataset e justificativa
-Versão executável acompanha dataset sintético de hábitos de estudo, com 1.500 registros, variáveis numéricas e categóricas. **Para a entrega, substituir por dataset público real e inserir aqui a fonte original.**
+## 2. Dataset
+Foi escolhido o **Adult / Census Income**, do UCI Machine Learning Repository, com 48.842 instâncias e 14 atributos de entrada. Os dados foram extraídos de registros censitários de 1994 e incluem variáveis como idade, escolaridade, horas trabalhadas por semana, classe de trabalho, ocupação e faixa de renda.
 
-## 2. Tratamento
-A aplicação remove valores ausentes apenas da(s) coluna(s) selecionada(s) antes dos cálculos. Conversões/decisões adicionais devem ser documentadas ao trocar o dataset.
+Fonte: https://archive.ics.uci.edu/dataset/2/adult  
+DOI: https://doi.org/10.24432/C5XW20
 
-## 3. Núcleo estatístico
-As medidas exibidas são calculadas em `minhastats.py`: média; mediana; moda; amplitude; variância populacional/amostral; desvio padrão; percentis; quartis; coeficiente de variação; covariância; Pearson; regressão por mínimos quadrados e R². NumPy é usado nos testes como referência, não no núcleo.
+Há valores ausentes em algumas variáveis categóricas. Na aplicação, operações numéricas usam `dropna()` apenas na(s) coluna(s) selecionada(s), preservando o restante do dataset.
+
+## 3. Núcleo estatístico próprio
+As medidas são implementadas em `minhastats.py`.
+
+- Média: $\bar{x}=\frac{1}{n}\sum x_i$
+- Variância populacional: $\sigma^2=\frac{\sum(x_i-\bar{x})^2}{n}$
+- Variância amostral: $s^2=\frac{\sum(x_i-\bar{x})^2}{n-1}$
+- Desvio padrão: $s=\sqrt{s^2}$
+- CV: $CV=\frac{s}{\bar{x}}\times100\%$
+- Covariância amostral: $cov(X,Y)=\frac{\sum(x_i-\bar{x})(y_i-\bar{y})}{n-1}$
+- Pearson: $r=\frac{cov(X,Y)}{s_Xs_Y}$
+- Regressão: $\hat{y}=b_0+b_1x$, com mínimos quadrados.
+
+Percentis usam a posição $p(n-1)/100$ e interpolação linear.
 
 ## 4. Validação
-Execute `pytest -v`. Os testes comparam o núcleo com NumPy, incluindo `ddof=1` para variância/covariância amostral e tolerâncias numéricas.
+`test_minhastats.py` compara média, mediana, amplitude, variâncias, desvios, percentis/quartis, CV, covariância, Pearson e regressão com NumPy. As comparações de ponto flutuante usam `np.isclose`, tipicamente com `rtol=1e-9`; percentis usam `rtol=1e-6` devido à interpolação.
 
-## 5. Módulos
-A interface Streamlit oferece: inspeção do dataset; descritiva com Sturges e outliers IQR; LGN; TCL sobre os dados; sobreposição de Normal/Exponencial/Uniforme/Poisson; correlação, regressão, R² e predição dentro da faixa observada.
+## 5. Módulos da aplicação
+### Módulo 0 — Dados reais
+Inspeção do dataset, quantidade de registros, tipos e nulos.
+
+### Módulos 1 e 2 — Descritiva
+Medidas próprias, histograma com Sturges, boxplot, IQR, outliers e interpretação automática de assimetria.
+
+### Módulo 3 — Simulação
+LGN por lançamentos de moeda e TCL por reamostragem de variável real, com tamanho amostral e repetições controláveis.
+
+### Módulo 4 — Distribuições
+Sobreposição de Normal, Exponencial, Uniforme ou Poisson ao histograma, com parâmetros estimados a partir dos dados.
+
+### Módulo 5 — Correlação e regressão
+Pearson próprio, mínimos quadrados, equação, R², gráfico e predição limitada à faixa observada.
 
 ## 6. Três descobertas
-Use a própria aplicação para produzir três afirmações sustentadas por número + gráfico. Sugestões: relação horas de estudo × nota; contraste de notas por método/curso; investigação dos outliers. Registre limites e evite linguagem causal para simples associação.
+**Preencher depois de executar a aplicação com o dataset baixado. Não inventar resultados.** Para cada descoberta, registrar: afirmação + valor estatístico + gráfico/print + limitação.
 
-## 7. Entrega
-Adicionar integrantes/matrículas, URL original do dataset, URL do repositório público, URL do vídeo e resumo executivo. O histórico de commits deve ser real e distribuído pela equipe.
+1. **Escolaridade e renda:** PREENCHER COM RESULTADO OBSERVADO.
+2. **Idade e horas semanais:** PREENCHER COM RESULTADO OBSERVADO.
+3. **Outliers em capital/horas:** PREENCHER COM RESULTADO OBSERVADO.
+
+## 7. Limitações
+O dataset representa um recorte censitário histórico de 1994. Associações observadas não demonstram causalidade. Algumas variáveis possuem valores ausentes, e os resultados não devem ser tratados como descrição da população atual.
+
+## 8. Links finais
+**Repositório público:** PREENCHER  
+**Vídeo (3–5 min):** PREENCHER

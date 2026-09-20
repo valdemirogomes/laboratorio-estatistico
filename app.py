@@ -11,12 +11,17 @@ st.title('📊 Laboratório Estatístico Interativo')
 st.caption('Matemática e Estatística para Computação — medidas exibidas calculadas pelo núcleo próprio minhastats.py')
 
 @st.cache_data
-def carregar(): return pd.read_csv('dados/dataset.csv')
+def carregar():
+    try:
+        return pd.read_csv('dados/dataset.csv')
+    except FileNotFoundError:
+        st.error('Dataset não encontrado. Execute primeiro: python baixar_dataset.py')
+        st.stop()
 df=carregar(); nums=list(df.select_dtypes(include='number').columns); cats=list(df.select_dtypes(exclude='number').columns)
 mod=st.sidebar.radio('Módulo',['0 — Dataset','1/2 — Descritiva','3 — LGN e TCL','4 — Distribuições','5 — Correlação e regressão','6 — Descobertas'])
 
 if mod=='0 — Dataset':
-    st.header('Módulo 0 — Dataset'); st.write(f'{len(df)} registros, {len(nums)} variáveis numéricas e {len(cats)} categóricas.'); st.dataframe(df.head(30),use_container_width=True)
+    st.header('Módulo 0 — Dataset Adult (UCI)'); st.write(f'{len(df)} registros, {len(nums)} variáveis numéricas e {len(cats)} categóricas.'); st.markdown('**Fonte:** UCI Machine Learning Repository — Adult/Census Income (1994).') st.dataframe(df.head(30),use_container_width=True)
     st.write('Nulos por coluna:'); st.dataframe(df.isna().sum().to_frame('nulos'))
 elif mod=='1/2 — Descritiva':
     st.header('Módulos 1 e 2 — Estatística descritiva interativa'); col=st.selectbox('Variável numérica',nums); d=df[col].dropna().tolist()
@@ -49,4 +54,4 @@ else:
         st.header('Módulo 5 — Correlação e regressão'); xcol=st.selectbox('X',nums); ycol=st.selectbox('Y',[c for c in nums if c!=xcol]); tmp=df[[xcol,ycol]].dropna(); x=tmp[xcol].tolist(); y=tmp[ycol].tolist(); r=ms.correlacao(x,y); b0,b1,r2=ms.regressao_linear(x,y); st.write(f'Pearson r = **{r:.4f}** | ŷ = **{b0:.4f} + {b1:.4f}·x** | R² = **{r2:.4f}**'); st.info(f'Cada unidade a mais de {xcol} está associada, em média, a {b1:.4f} unidades de variação em {ycol}. Correlação não implica causalidade.')
         fig,ax=plt.subplots(); ax.scatter(x,y,s=10); xx=np.linspace(min(x),max(x),100); ax.plot(xx,[b0+b1*v for v in xx]); st.pyplot(fig); xp=st.number_input('X para predição',min_value=float(min(x)),max_value=float(max(x)),value=float(ms.media(x))); st.success(f'Predição dentro da faixa observada: ŷ = {b0+b1*xp:.3f}')
     else:
-        st.header('Módulo 6 — Três descobertas do dataset'); st.markdown('**1. Relação entre estudo e desempenho:** compare `study_hours` e `exam_score` no módulo de regressão e quantifique r e R².\n\n**2. Contraste entre grupos:** use `course` ou `study_method` para observar diferenças de desempenho entre categorias.\n\n**3. Pontos fora da curva:** no módulo descritivo, escolha `study_hours`, `sleep_hours` ou `exam_score` e investigue os outliers detectados pela regra do IQR.'); st.caption('As conclusões finais devem registrar número/gráfico e limite: associação não é causalidade e este dataset é demonstrativo.')
+        st.header('Módulo 6 — Três descobertas do dataset'); st.markdown('**Roteiro para as descobertas finais (geradas com o dataset real):**\n\n**1. Escolaridade e renda:** compare `education_num` com `income`, registrando medidas e gráficos.\n\n**2. Horas semanais e idade:** explore `hours_per_week` × `age` no módulo de correlação/regressão e registre r e R².\n\n**3. Pontos fora da curva:** investigue outliers em `capital_gain`, `capital_loss` e `hours_per_week` pela regra do IQR.'); st.caption('No RELATORIO.md, registre apenas conclusões sustentadas pelos números e gráficos obtidos na execução. Associação não implica causalidade.')
